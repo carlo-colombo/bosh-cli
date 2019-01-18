@@ -7,6 +7,7 @@ import (
 
 	bosherr "github.com/cloudfoundry/bosh-utils/errors"
 	"github.com/cloudfoundry/bosh-utils/httpclient"
+	boshlog "github.com/cloudfoundry/bosh-utils/logger"
 )
 
 type AgentRequestMessage struct {
@@ -16,9 +17,11 @@ type AgentRequestMessage struct {
 }
 
 type agentRequest struct {
-	directorID string
-	endpoint   string
-	httpClient *httpclient.HTTPClient
+	directorID          string
+	endpoint            string
+	alternativeEndpoint string
+	httpClient          *httpclient.HTTPClient
+	logger              boshlog.Logger
 }
 
 func (r agentRequest) Send(method string, arguments []interface{}, response Response) error {
@@ -33,9 +36,7 @@ func (r agentRequest) Send(method string, arguments []interface{}, response Resp
 		return bosherr.WrapError(err, "Marshaling agent request")
 	}
 
-	httpResponse, err := r.httpClient.PostCustomized(r.endpoint, agentRequestJSON, func(r *http.Request) {
-		r.Header["Content-type"] = []string{"application/json"}
-	})
+	httpResponse, err := r.performPost(r.endpoint, agentRequestJSON)
 
 	if err != nil {
 		return bosherr.WrapErrorf(err, "Performing request to agent")
@@ -44,6 +45,10 @@ func (r agentRequest) Send(method string, arguments []interface{}, response Resp
 		_ = httpResponse.Body.Close()
 	}()
 
+	if httpResponse.StatusCode == http.StatusUnauthorized && r.alternativeEndpoint != "" {
+		r.logger.Info("agentRequest", "Agent responded with non-successful status code %d on agent endpoint %s, trying alternative endpoint %s", httpResponse.StatusCode, r.endpoint, r.alternativeEndpoint)
+		httpResponse, err = r.performPost(r.alternativeEndpoint, agentRequestJSON)
+	}
 	if httpResponse.StatusCode != http.StatusOK {
 		return bosherr.Errorf("Agent responded with non-successful status code: %d", httpResponse.StatusCode)
 	}
@@ -64,4 +69,10 @@ func (r agentRequest) Send(method string, arguments []interface{}, response Resp
 	}
 
 	return nil
+}
+
+func (r *agentRequest) performPost(endpoint string, agentRequestJSON []byte) (*http.Response, error) {
+	return r.httpClient.PostCustomized(endpoint, agentRequestJSON, func(r *http.Request) {
+		r.Header["Content-type"] = []string{"application/json"}
+	})
 }

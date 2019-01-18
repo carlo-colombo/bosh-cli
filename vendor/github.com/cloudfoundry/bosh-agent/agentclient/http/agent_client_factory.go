@@ -13,6 +13,7 @@ import (
 
 type AgentClientFactory interface {
 	NewAgentClient(directorID, mbusURL, caCert string) (agentclient.AgentClient, error)
+	NewAgentClientWithAlternativeMbusURL(directorID, mbusURL, alternativeMbusURL, caCert string) (agentclient.AgentClient, error)
 }
 
 type agentClientFactory struct {
@@ -31,6 +32,10 @@ func NewAgentClientFactory(
 }
 
 func (f *agentClientFactory) NewAgentClient(directorID, mbusURL, caCert string) (agentclient.AgentClient, error) {
+	return f.NewAgentClientWithAlternativeMbusURL(directorID, mbusURL, "", caCert)
+}
+
+func (f *agentClientFactory) NewAgentClientWithAlternativeMbusURL(directorID, mbusURL, alternativeMbusURL, caCert string) (agentclient.AgentClient, error) {
 	client := httpclient.DefaultClient
 
 	if caCert != "" {
@@ -42,5 +47,5 @@ func (f *agentClientFactory) NewAgentClient(directorID, mbusURL, caCert string) 
 	}
 
 	httpClient := httpclient.NewHTTPClient(client, f.logger)
-	return NewAgentClient(mbusURL, directorID, f.getTaskDelay, 10, httpClient, f.logger), nil
+	return NewAgentClient(mbusURL, alternativeMbusURL, directorID, f.getTaskDelay, 10, httpClient, f.logger), nil
 }

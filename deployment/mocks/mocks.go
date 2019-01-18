@@ -114,7 +114,7 @@ func (m *MockDeployer) EXPECT() *MockDeployerMockRecorder {
 }
 
 // Deploy mocks base method
-func (m *MockDeployer) Deploy(arg0 cloud.Cloud, arg1 manifest.Manifest, arg2 stemcell.CloudStemcell, arg3 manifest0.Registry, arg4 vm.Manager, arg5 vm.Manager, arg6 blobstore.Blobstore, arg7 bool, arg8 ui.Stage) (deployment.Deployment, error) {
+func (m *MockDeployer) Deploy(arg0 cloud.Cloud, arg1 manifest.Manifest, arg2 stemcell.CloudStemcell, arg3 manifest0.Registry, arg4 vm.Manager, arg5 blobstore.Blobstore, arg6 bool, arg7 ui.Stage) (deployment.Deployment, error) {
 	ret := m.ctrl.Call(m, "Deploy", arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 	ret0, _ := ret[0].(deployment.Deployment)
 	ret1, _ := ret[1].(error)
@@ -122,7 +122,7 @@ func (m *MockDeployer) Deploy(arg0 cloud.Cloud, arg1 manifest.Manifest, arg2 ste
 }
 
 // Deploy indicates an expected call of Deploy
-func (mr *MockDeployerMockRecorder) Deploy(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7, arg8 interface{}) *gomock.Call {
+func (mr *MockDeployerMockRecorder) Deploy(arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7 interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "Deploy", reflect.TypeOf((*MockDeployer)(nil).Deploy), arg0, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
 }
 

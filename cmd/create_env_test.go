@@ -180,7 +180,7 @@ var _ = Describe("CreateEnvCmd", func() {
 
 			mockAgentClientFactory = mock_httpagent.NewMockAgentClientFactory(mockCtrl)
 			mockAgentClient = mock_agentclient.NewMockAgentClient(mockCtrl)
-			mockAgentClientFactory.EXPECT().NewAgentClient(gomock.Any(), gomock.Any(), gomock.Any()).Return(mockAgentClient, nil).AnyTimes()
+			mockAgentClientFactory.EXPECT().NewAgentClientWithAlternativeMbusURL(gomock.Any(), gomock.Any(), gomock.Any(), gomock.Any()).Return(mockAgentClient, nil).AnyTimes()
 
 			mockCloudFactory = mock_cloud.NewMockFactory(mockCtrl)
 
@@ -442,7 +442,6 @@ var _ = Describe("CreateEnvCmd", func() {
 				boshDeploymentManifest,
 				cloudStemcell,
 				expectedRegistryConfig,
-				fakeVMManager,
 				fakeVMManager,
 				mockBlobstore,
 				expectedSkipDrain,
@@ -1135,7 +1134,6 @@ var _ = Describe("CreateEnvCmd", func() {
 					boshDeploymentManifest,
 					cloudStemcell,
 					installationManifest.Registry,
-					fakeVMManager,
 					fakeVMManager,
 					mockBlobstore,
 					expectedSkipDrain,

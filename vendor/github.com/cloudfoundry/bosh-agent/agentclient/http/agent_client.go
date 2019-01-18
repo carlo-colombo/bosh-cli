@@ -23,6 +23,7 @@ type AgentClient struct {
 
 func NewAgentClient(
 	endpoint string,
+	alternativeEndpoint string,
 	directorID string,
 	getTaskDelay time.Duration,
 	toleratedErrorCount int,
@@ -31,10 +32,13 @@ func NewAgentClient(
 ) agentclient.AgentClient {
 	// if this were NATS, we would need the agentID, but since it's http, the endpoint is unique to the agent
 	agentEndpoint := fmt.Sprintf("%s/agent", endpoint)
+	alternativeAgentEndpoint := fmt.Sprintf("%s/agent", alternativeEndpoint)
 	agentRequest := agentRequest{
-		directorID: directorID,
-		endpoint:   agentEndpoint,
-		httpClient: httpClient,
+		directorID:          directorID,
+		endpoint:            agentEndpoint,
+		alternativeEndpoint: alternativeAgentEndpoint,
+		httpClient:          httpClient,
+		logger:              logger,
 	}
 	return &AgentClient{
 		AgentRequest:        agentRequest,

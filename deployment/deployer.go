@@ -23,7 +23,6 @@ type Deployer interface {
 		bistemcell.CloudStemcell,
 		biinstallmanifest.Registry,
 		bivm.Manager,
-		bivm.Manager,
 		biblobstore.Blobstore,
 		bool,
 		biui.Stage,
@@ -59,17 +58,15 @@ func (d *deployer) Deploy(
 	cloudStemcell bistemcell.CloudStemcell,
 	registryConfig biinstallmanifest.Registry,
 	vmManager bivm.Manager,
-	oldVmManager bivm.Manager,
 	blobstore biblobstore.Blobstore,
 	skipDrain bool,
 	deployStage biui.Stage,
 ) (Deployment, error) {
 	instanceManager := d.instanceManagerFactory.NewManager(cloud, vmManager, blobstore)
-	oldInstanceManager := d.instanceManagerFactory.NewManager(cloud, oldVmManager, blobstore)
 
 	pingTimeout := 10 * time.Second
 	pingDelay := 500 * time.Millisecond
-	if err := oldInstanceManager.DeleteAll(pingTimeout, pingDelay, skipDrain, deployStage); err != nil {
+	if err := instanceManager.DeleteAll(pingTimeout, pingDelay, skipDrain, deployStage); err != nil {
 		return nil, err
 	}
 

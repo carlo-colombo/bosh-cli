@@ -45,3 +45,16 @@ func (m *MockAgentClientFactory) NewAgentClient(directorID, mbusURL, caCert stri
 func (mr *MockAgentClientFactoryMockRecorder) NewAgentClient(directorID, mbusURL, caCert interface{}) *gomock.Call {
 	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewAgentClient", reflect.TypeOf((*MockAgentClientFactory)(nil).NewAgentClient), directorID, mbusURL, caCert)
 }
+
+// NewAgentClientWithAlternativeMbusURL mocks base method
+func (m *MockAgentClientFactory) NewAgentClientWithAlternativeMbusURL(directorID, mbusURL, alternativeMbusURL, caCert string) (agentclient.AgentClient, error) {
+	ret := m.ctrl.Call(m, "NewAgentClientWithAlternativeMbusURL", directorID, mbusURL, alternativeMbusURL, caCert)
+	ret0, _ := ret[0].(agentclient.AgentClient)
+	ret1, _ := ret[1].(error)
+	return ret0, ret1
+}
+
+// NewAgentClientWithAlternativeMbusURL indicates an expected call of NewAgentClientWithAlternativeMbusURL
+func (mr *MockAgentClientFactoryMockRecorder) NewAgentClientWithAlternativeMbusURL(directorID, mbusURL, alternativeMbusURL, caCert interface{}) *gomock.Call {
+	return mr.mock.ctrl.RecordCallWithMethodType(mr.mock, "NewAgentClientWithAlternativeMbusURL", reflect.TypeOf((*MockAgentClientFactory)(nil).NewAgentClientWithAlternativeMbusURL), directorID, mbusURL, alternativeMbusURL, caCert)
+}
