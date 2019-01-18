@@ -39,7 +39,7 @@ type installation struct {
 	Properties map[interface{}]interface{}
 	SSHTunnel  SSHTunnel `yaml:"ssh_tunnel"`
 	Mbus       string
-	OldMbus    string
+	OldMbus    string `yaml:"old_mbus"`
 	Cert       Certificate
 }
 

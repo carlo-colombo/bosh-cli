@@ -247,12 +247,16 @@ func (c *DeploymentPreparer) deploy(
 		return err
 	}
 
+	//TODO: Can this be done also in agent Client?
 	agentClient, err := c.agentClientFactory.NewAgentClient(deploymentState.DirectorID, installationManifest.Mbus, installationManifest.Cert.CA)
+	c.logger.Debug("CLI", ">>>>>> Initializing Agent client with mbusPW: ", installationManifest.Mbus)
 	oldAgentClient, err := c.agentClientFactory.NewAgentClient(deploymentState.DirectorID, installationManifest.OldMbus, installationManifest.Cert.CA)
+	c.logger.Debug("CLI", ">>>>>> Initializing OLD Agent client with old mbusPW: ", installationManifest.OldMbus)
 	if err != nil {
 		return err
 	}
 	vmManager := c.vmManagerFactory.NewManager(cloud, agentClient)
+	//TODO: why large letter?
 	OldVmManager := c.vmManagerFactory.NewManager(cloud, oldAgentClient)
 
 	blobstore, err := c.blobstoreFactory.Create(installationManifest.Mbus, bihttpclient.CreateDefaultClientInsecureSkipVerify())
